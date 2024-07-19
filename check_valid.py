@@ -20,14 +20,14 @@ def get_actual_date(response, date_of_dispatch):
 
 
 # Формируем ссылку для проверки результата по зав.номеру и ФИФ
-def get_url(mi_number, mit_number, verification_date_start):
+def get_url(mi_number, mit_number, verification_date_start: datetime.datetime):
     url_mi_number = f'mi_number={mi_number}'
     url_mit_number = f'mit_number={mit_number}'
-    url_verification_date_start = f'verification_date_start={verification_date_start}'
+    url_verification_date_start = f'verification_date_start={verification_date_start.strftime('%Y-%m-%d')}'
     url = URL + url_mi_number + '&' + url_mit_number + '&' + url_verification_date_start
     return url
 
-    
+
 # Добавляем в словарь результаты поверки
 def add_result(response, mi):
     mi['mit_number'] = response[0]['mit_number']
