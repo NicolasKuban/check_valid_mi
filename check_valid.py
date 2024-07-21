@@ -7,13 +7,17 @@ import datetime
 
 # Адрес API ГИС Аршин
 URL = 'https://fgis.gost.ru/fundmetrology/eapi/vri?'
+WORKBOOK = 'check.xlsx'
+SHEET = 'ЖурналПоверки'
+DATE_URL = '%Y-%m-%d'
+DATE_XLS = '%d.%m.%Y'
 
 
 # Отбрасываем СИ поверенные до дату отправки на поверку
 def get_actual_date(response, date_of_dispatch):
     response_temp = []
     for mi in response:
-        if date_of_dispatch > datetime.datetime.strptime(mi['verification_date'], '%d.%m.%Y'):
+        if date_of_dispatch > datetime.datetime.strptime(mi['verification_date'], DATE_XLS):
             continue
         response_temp.append(mi)
     return response_temp
@@ -23,7 +27,7 @@ def get_actual_date(response, date_of_dispatch):
 def get_url(mi_number, mit_number, verification_date_start: datetime.datetime):
     url_mi_number = f'mi_number={mi_number}'
     url_mit_number = f'mit_number={mit_number}'
-    url_verification_date_start = f'verification_date_start={verification_date_start.strftime('%Y-%m-%d')}'
+    url_verification_date_start = f'verification_date_start={verification_date_start.strftime(DATE_URL)}'
     url = URL + url_mi_number + '&' + url_mit_number + '&' + url_verification_date_start
     return url
 
@@ -47,11 +51,11 @@ def xldate(xldate, datemode=0):
 
 # Путь до файла со списком СИ
 path = Path(Path.cwd())
-file = path / 'check.xlsx'
+file = path / WORKBOOK
 
 # Открываем лист с таблицей из файла со списком СИ
 wb = load_workbook(file, data_only=True)
-sheet = wb['ЖурналПоверки']
+sheet = wb[SHEET]
 
 # Читаем данные из таблицы
 for row in range(2, sheet.max_row + 1):
