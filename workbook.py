@@ -11,11 +11,13 @@ DATE_DISPATCH = 10
 APPLICABILITY = 14
 VERIFICATION_DATE = 15
 DOCNUM = 16
+DATE_FORMAT = 'DD.MM.YYYY'
+
 
 Mi = namedtuple('Mi', 'number fif date_dispatch')
-Result = namedtuple('Result', 'applicability result_docnum verification_date')
+Result = namedtuple('Result', 'applicability docnum date')
 ItemFields = namedtuple('ItemFields', 'number fif date_dispatch')
-ResultFields = namedtuple('ResultFields', 'applicatility date docnum')
+ResultFields = namedtuple('ResultFields', 'applicability date docnum')
 item_fields = ItemFields(MNF_NUMBER, FIF_NUMBER, DATE_DISPATCH)
 result_fields = ResultFields(APPLICABILITY, VERIFICATION_DATE, DOCNUM)
 
@@ -42,8 +44,10 @@ def get_data(file):
 def set_data(file, data):
     wb = load_workbook(file, data_only=True)
     sheet = wb[SHEET]
-    for key, value in data:
-        print(key, value, sep='\n')
+    for key, value in data.items():
+        if value['result'].docnum:
+            set_result(sheet, key, value['result'])
+    wb.save(file)
     wb.close()
 
 
@@ -54,18 +58,20 @@ def get_mi(sheet, row, fields):
         sheet.cell(row=row, column=fields.date_dispatch).value
     )
 
-def get_result(sheet, row, fields=item_fields):
+def get_result(sheet, row, fields=result_fields):
     return (
-        sheet.cell(row=row, column=fields.applicatility).value,
+        sheet.cell(row=row, column=fields.applicability).value,
         sheet.cell(row=row, column=fields.date).value,
         sheet.cell(row=row, column=fields.docnum).value
     )
 
 
 def set_result(sheet, row, item, fields=result_fields):
-    sheet.cell(row=row, column=fields.applicatility).value = item['applicability']
-    sheet.cell(row=row, column=fields.docnum).value = item['result_docnum']
-    sheet.cell(row=row, column=fields.date).value = item['verification_date']
+    sheet.cell(row=row, column=fields.applicability).value = item.applicability
+    sheet.cell(row=row, column=fields.docnum).value = item.docnum
+    sheet.cell(row=row, column=fields.date).value = item.date
+    sheet.cell(row=row, column=fields.date).number_format = DATE_FORMAT
+
 
 
 def insert_result(item, result):
@@ -77,7 +83,18 @@ if __name__ == '__main__':
     # print(get_data(file))
     rrr = {
         'applicability': 'свидетельство',
-        'result_docnum': 'С-АУ/18-07-2024/355476803',
-        'verification_date': date.today()
+        'docnum': 'С-АУ/18-07-2024/355476803',
+        'date': date.today()
     }
-    print(rrr)
+    sss = {
+        'applicability': 'извещение',
+        'docnum': 'И-АУ/14-07-2024/1111111111',
+        'date': date.today()
+    }
+    data = get_data(file)
+    print(data)
+    print('=======================')
+    data[2]= insert_result(data[2],rrr)
+    data[4]= insert_result(data[4],sss)
+    print(data)
+    set_data(file, data)
