@@ -7,6 +7,7 @@ WORKBOOK = 'check.xlsx'
 SHEET = 'ЖурналПоверки'
 MNF_NUMBER = 4
 FIF_NUMBER = 5
+TARGET = 6
 DATE_DISPATCH = 10
 APPLICABILITY = 14
 VERIFICATION_DATE = 15
@@ -31,6 +32,8 @@ def get_data(file):
 
     for row in range(2, sheet.max_row + 1):
         if sheet.cell(row=row, column=DOCNUM).value:
+            continue
+        if sheet.cell(row=row, column=TARGET).value != 'Поверка':
             continue
         data[row] = {
             'mi': Mi(*get_mi(sheet, row, item_fields)),
@@ -80,21 +83,21 @@ def insert_result(item, result):
 
 if __name__ == '__main__':
     print('=======================')
-    # print(get_data(file))
-    rrr = {
-        'applicability': 'свидетельство',
-        'docnum': 'С-АУ/18-07-2024/355476803',
-        'date': date.today()
-    }
-    sss = {
-        'applicability': 'извещение',
-        'docnum': 'И-АУ/14-07-2024/1111111111',
-        'date': date.today()
-    }
-    data = get_data(file)
-    print(data)
-    print('=======================')
-    data[2]= insert_result(data[2],rrr)
-    data[4]= insert_result(data[4],sss)
-    print(data)
-    set_data(file, data)
+    print(get_data(file))
+    # rrr = {
+    #     'applicability': 'свидетельство',
+    #     'docnum': 'С-АУ/18-07-2024/355476803',
+    #     'date': date.today()
+    # }
+    # sss = {
+    #     'applicability': 'извещение',
+    #     'docnum': 'И-АУ/14-07-2024/1111111111',
+    #     'date': date.today()
+    # }
+    # data = get_data(file)
+    # print(data)
+    # print('=======================')
+    # data[2]= insert_result(data[2],rrr)
+    # data[4]= insert_result(data[4],sss)
+    # print(data)
+    # set_data(file, data)

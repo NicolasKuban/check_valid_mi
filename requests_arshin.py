@@ -14,7 +14,7 @@ def get_url(item):
     )
     return URL + '&'.join(options)
 
-def get_response(url):
+def set_requests(url):
     try:
         response = requests.get(url).json()['result']['items']
     except:
@@ -24,6 +24,10 @@ def get_response(url):
     sleep(0.5)
     return response
 
+def get_response(item):
+    url = get_url(item)
+    response = set_requests(url)
+    return response
 
 if __name__ == '__main__':
     from collections import namedtuple

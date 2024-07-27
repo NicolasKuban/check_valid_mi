@@ -2,7 +2,7 @@ import colorama
 from colorama import Fore, Back
 
 
-CONTRACT_ORG = ('ООО "Феррата"', 'ФБУ "Краснодарский ЦСМ"')
+CONTRACT_ORG = ('ООО "ФЕРРАТА"', 'ФБУ "Краснодарский ЦСМ"')
 colorama.init()
 
 
@@ -29,12 +29,16 @@ def change_str(string):
 
 def view_response(response):
     response = sorted(response, key=lambda item: change_str(item['verification_date']) )
-    print(f'Найдено результатов поверки - {len(response)}')
-    print('-'*80)
+    # print(f'найдено результатов поверки - {len(response)}')
     for number, item in enumerate(response, 1):
-        print(view(item, number))
         print('-'*80)
+        print(view(item, number))
 
+def get_record():
+    print('Выберете верный номер записи')
+    record = int(input('==> ')) - 1
+    # print(f'=== {record} ===')
+    return record
 
 if __name__ == '__main__':
 
@@ -67,5 +71,3 @@ if __name__ == '__main__':
         {'vri_id': '1-355695419', 'org_title': 'ФБУ "Краснодарский ЦСМ"', 'mit_number': '35279-07', 'mit_title': 'Рулетки измерительные металлические', 'mit_notation': 'Р2УЗК, Р5УЗК, Р10УЗК', 'mi_modification': 'Р5УЗК', 'mi_number': '35', 'verification_date': '19.07.2024', 'valid_date': '18.07.2025', 'result_docnum': 'С-АУ/19-07-2024/355695419', 'applicability': True}
         ]
     view_response(response)
-
-print(Back.BLUE + Fore.GREEN + "text"+Back.RESET + "Bddd" + Back.RED + "89999" )
